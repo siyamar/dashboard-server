@@ -1,17 +1,16 @@
 const express = require('express');
 const app = express();
 const cors = require("cors");
+require('dotenv').config();
 const mysql = require("mysql");
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(cors())
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "dashboard"
-})
+
+const urlDB = `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_DATABASE}`
+
+const db = mysql.createConnection(urlDB)
 
 
 app.get("/users", (req, res) =>{
@@ -121,7 +120,9 @@ app.post("/orders", (req, res) => {
 //         res.status(500).json({err:'Could not create a new document'})
 //     })
 // })
-
+app.get('/', (req, res) => {
+    res.send('My Dashboard...')
+})
 
 app.listen(port, ()=>{
     console.log(`Dashboard is running port ${port}`)
